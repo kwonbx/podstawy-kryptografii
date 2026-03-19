@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     c = [pow(x, e, n) for x in blocksM]
 
-    print("WIADOMOŚĆ ZASZYFROWANA: " + "".join(map(str, c)))
+    print("\nWIADOMOŚĆ ZASZYFROWANA: " + "".join(map(str, c)))
 
     blocksM2 = [pow(x, d, n) for x in c]
     lastBlockLength = len(str(m)) % 3
