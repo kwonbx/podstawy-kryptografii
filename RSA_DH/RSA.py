@@ -50,9 +50,19 @@ if __name__ == '__main__':
 
     print("WIADOMOŚĆ ZASZYFROWANA: " + "".join(map(str, c)))
 
-    m2 = [pow(x, d, n) for x in c]
-    m2 = int("".join(map(str, m2)))
+    blocksM2 = [pow(x, d, n) for x in c]
+    lastBlockLength = len(str(m)) % 3
+    if lastBlockLength == 0:
+        lastBlockLength = 3
 
-    print("WIADOMOŚĆ JAWNA: " + str(m2))
+    partsM2 = []
+    for i, val in enumerate(blocksM2):
+        if i == len(blocksM2) - 1:
+            partsM2.append(str(val).zfill(lastBlockLength))
+        else:
+            partsM2.append(str(val).zfill(3))
 
-    compare(m, m2)
+    m2_final = int("".join(partsM2))
+    print("WIADOMOŚĆ JAWNA: " + str(m2_final))
+
+    compare(m, m2_final)
