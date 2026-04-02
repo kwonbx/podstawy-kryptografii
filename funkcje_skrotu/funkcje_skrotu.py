@@ -3,6 +3,7 @@ import time
 import random
 import string
 import numpy as np
+import os
 
 def generateHash(text, algorithm):
     hashObj = hashlib.new(algorithm)
@@ -62,21 +63,23 @@ if __name__ == '__main__':
     algorithms = ['md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512', 'sha3_224', 'sha3_256', 'sha3_384', 'sha3_512']
     userText = input('Podaj tekst: ')
 
-    testData = ["Lorem ipsum dolor sit amet, consectetur efficitur.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec sollicitudin arcu. Curabitur sed sodales nunc, vel feugiat lectus. Nullam tristique scelerisque libero eu ultrices. Suspendisse proin.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque consequat mauris sed mi mollis accumsan. Aenean fermentum commodo risus a venenatis. Duis ut elit urna. Praesent in malesuada nisl, et mollis erat. Quisque pretium enim gravida arcu aliquam, sed dictum odio ultricies. Vivamus viverra, ante commodo congue tincidunt, dui neque varius leo, sit amet pellentesque arcu leo porta erat. Quisque cursus, justo in commodo blandit, lacus erat gravida eros, et rhoncus lacus mi sed purus aenean.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempus gravida dolor, vitae molestie tellus tempus et. Aliquam malesuada posuere enim viverra finibus. Duis elementum felis libero, ut dictum dolor condimentum et. Proin eu hendrerit sem. Morbi suscipit tristique sem et dignissim. Curabitur placerat lacus in ex convallis tincidunt. Phasellus nec erat sapien. Ut sem arcu, mollis id ante sit amet, suscipit vehicula urna. Etiam mattis sem turpis, sed ultricies purus sagittis quis. Sed a nulla dolor. Morbi diam nibh, porttitor a orci eget, fringilla finibus nulla. Integer eu faucibus diam. Quisque eu risus dapibus, pellentesque ex sit amet, tempus tellus. Nulla a sapien faucibus tortor gravida facilisis egestas ut enim. Quisque urna nunc, semper nec odio quis, facilisis pulvinar est. Maecenas at metus vel diam gravida pharetra sit amet in lorem. Phasellus dapibus dolor a sapien pharetra, sit amet mattis libero finibus. Nulla at congue nisl, eget viverra est. Nunc aliquet metus in"]
+    files = {
+        "10MB": 1024 * 1024 * 10,
+        "100MB": 1024 * 1024 * 100,
+        "500MB": 1024 * 1024 * 500,
+    }
 
     for algorithm in algorithms:
         start = time.time()
         val = generateHash(userText.encode('utf-8'), algorithm)
         end = time.time()
         print("\nAlgorytm " + algorithm + ": \nTekst użytkownika o długości " + str(len(userText)) + " znaków: " + val + " | Czas działania: " + str(end - start) + " | Długość ciągu wyjściowego: " + str(len(val)))
-        for data in testData:
+        for label, bytes in files.items():
+            data = os.urandom(bytes)
             start = time.time()
-            val = generateHash(data.encode('utf-8'), algorithm)
+            val = generateHash(data, algorithm)
             end = time.time()
-            print("Tekst testowy o długości " + str(len(data)) + " znaków: " + val + " | Czas działania: " + str(end - start) + " | Długość ciągu wyjściowego: " + str(len(val)))
+            print("Tekst testowy o wielkości " + label + ": " + val + " | Czas działania: " + str(end - start) + " | Długość ciągu wyjściowego: " + str(len(val)))
 
     findCollision('sha256')
     prob = testSAC_sha256()

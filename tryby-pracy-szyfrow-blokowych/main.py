@@ -15,9 +15,9 @@ def cipherMode(mode, iv, nonce):
 
 def benchmark(modeNames, key, iv, nonce):
     files = {
-        "10MB": 1024*1024,
-        "100MB": 1024*1024*10,
-        "500MB": 1024*1024*100,
+        "10MB": 1024*1024*10,
+        "100MB": 1024*1024*100,
+        "500MB": 1024*1024*500,
     }
 
     for label, bytes in files.items():
