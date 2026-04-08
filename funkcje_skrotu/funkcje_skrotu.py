@@ -4,6 +4,7 @@ import random
 import string
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 def generateHash(text, algorithm):
     hashObj = hashlib.new(algorithm)
@@ -69,6 +70,8 @@ if __name__ == '__main__':
         "500MB": 1024 * 1024 * 500,
     }
 
+    plotData = {label: {} for label in files.keys()}
+
     for algorithm in algorithms:
         start = time.time()
         val = generateHash(userText.encode('utf-8'), algorithm)
@@ -79,7 +82,23 @@ if __name__ == '__main__':
             start = time.time()
             val = generateHash(data, algorithm)
             end = time.time()
-            print("Tekst testowy o wielkości " + label + ": " + val + " | Czas działania: " + str(end - start) + " | Długość ciągu wyjściowego: " + str(len(val)))
+            totalTime = end - start
+            plotData[label][algorithm] = totalTime
+            print("Tekst testowy o wielkości " + label + ": " + val + " | Czas działania: " + str(totalTime) + " | Długość ciągu wyjściowego: " + str(len(val)))
+
+    for label, result in plotData.items():
+        sortedAlg = sorted(result.items(), key=lambda x: x[1])
+        algs, times = zip(*sortedAlg)
+        plt.figure(figsize=(10, 6))
+        plt.bar(algs, times)
+        plt.title(f'Czas hashowania dla rozmiaru {label}')
+        plt.ylabel('Czas (sekundy)')
+        plt.xlabel('Algorytm')
+        plt.xticks(rotation=45)
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        plt.savefig(f'wykres_{label}.png')
+        print(f"Wygenerowano wykres: wykres_{label}.png")
 
     findCollision('sha256')
     prob = testSAC_sha256()
