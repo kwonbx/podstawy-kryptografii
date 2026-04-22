@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import time
 import os
+import matplotlib.pyplot as plt
 
 def cipherMode(mode, iv, nonce):
     match mode:
@@ -19,6 +20,9 @@ def benchmark(modeNames, key, iv, nonce):
         "100MB": 1024*1024*100,
         "500MB": 1024*1024*500,
     }
+
+    plotDataEnc = {"10MB": {}, "100MB": {}, "500MB": {}}
+    plotDataDec = {"10MB": {}, "100MB": {}, "500MB": {}}
 
     for label, bytes in files.items():
         data = os.urandom(bytes)
@@ -44,8 +48,35 @@ def benchmark(modeNames, key, iv, nonce):
             totalEnc = endEnc - startEnc
             totalDec = endDec - startDec
 
+            plotDataEnc[label][mode] = totalEnc
+            plotDataDec[label][mode] = totalDec
+
             print(mode + ":")
             print("Czas szyfrowania:" + str(totalEnc) + " | Czas deszyfrowania: " + str(totalDec))
+
+    for label, result in plotDataEnc.items():
+        modes, times = zip(*result.items())
+        plt.figure(figsize=(10, 6))
+        plt.bar(modes, times)
+        plt.title("Czas szyfrowania dla rozmiaru " + label)
+        plt.ylabel("Czas (sekundy)")
+        plt.xlabel("Tryb pracy")
+        plt.xticks(rotation=45)
+        plt.grid(alpha=0.7)
+        plt.tight_layout()
+        plt.savefig("wykres_enc_" + label + ".png")
+
+    for label, result in plotDataDec.items():
+        modes, times = zip(*result.items())
+        plt.figure(figsize=(10, 6))
+        plt.bar(modes, times)
+        plt.title("Czas deszyfrowania dla rozmiaru " + label)
+        plt.ylabel("Czas (sekundy)")
+        plt.xlabel("Tryb pracy")
+        plt.xticks(rotation=45)
+        plt.grid(alpha=0.7)
+        plt.tight_layout()
+        plt.savefig("wykres_dec_" + label + ".png")
 
 def errorPropagation(modeNames, key, iv, nonce):
     plainText = b"Wiadomosc przygotowana na potrzeby testu. ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"

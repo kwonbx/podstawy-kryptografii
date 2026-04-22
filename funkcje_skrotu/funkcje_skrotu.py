@@ -70,7 +70,7 @@ if __name__ == '__main__':
         "500MB": 1024 * 1024 * 500,
     }
 
-    plotData = {label: {} for label in files.keys()}
+    plotData = {"10MB": {}, "100MB": {}, "500MB": {}}
 
     for algorithm in algorithms:
         start = time.time()
@@ -87,18 +87,16 @@ if __name__ == '__main__':
             print("Tekst testowy o wielkości " + label + ": " + val + " | Czas działania: " + str(totalTime) + " | Długość ciągu wyjściowego: " + str(len(val)))
 
     for label, result in plotData.items():
-        sortedAlg = sorted(result.items(), key=lambda x: x[1])
-        algs, times = zip(*sortedAlg)
+        algs, times = zip(*result.items())
         plt.figure(figsize=(10, 6))
         plt.bar(algs, times)
-        plt.title(f'Czas hashowania dla rozmiaru {label}')
-        plt.ylabel('Czas (sekundy)')
-        plt.xlabel('Algorytm')
+        plt.title("Czas hashowania dla rozmiaru " + label)
+        plt.ylabel("Czas (s)")
+        plt.xlabel("Algorytm")
         plt.xticks(rotation=45)
-        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.grid(alpha=0.7)
         plt.tight_layout()
-        plt.savefig(f'wykres_{label}.png')
-        print(f"Wygenerowano wykres: wykres_{label}.png")
+        plt.savefig("wykres_" + label + ".png")
 
     findCollision('sha256')
     prob = testSAC_sha256()
